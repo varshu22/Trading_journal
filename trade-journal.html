@@ -364,6 +364,8 @@
 
 <script>
   const STORAGE_KEY = 'tradelog_entries_v1';
+  const GOOGLE_SCRIPT_URL =
+'https://script.google.com/macros/s/AKfycbwug8yFKXa4l_KIjXD6JF-vsgYoxrweC9yDo_xyWbEBXz0VrKJSwsfwLYDUp3WplXA/exec';
   let entries = [];
   let editId = null;
   let expandedId = null;
@@ -618,16 +620,30 @@
       todo: document.getElementById('f-todo').value,
     };
     if (editId) {
-      entries = entries.map(e => e.id === editId ? entry : e);
-      showToast('Entry updated');
-    } else {
-      entries = [entry, ...entries].sort((a, b) => b.date.localeCompare(a.date));
-      showToast('Entry saved successfully');
-    }
-    saveEntries();
-    editId = null;
-    resetForm();
-    switchView('dashboard');
+	  entries = entries.map(e => e.id === editId ? entry : e);
+	  showToast('Entry updated');
+	} else {
+	  entries = [entry, ...entries].sort((a, b) => b.date.localeCompare(a.date));
+	  showToast('Entry saved successfully');
+	}
+
+	saveEntries();
+
+	// Save to Google Sheet
+	fetch(GOOGLE_SCRIPT_URL, {
+	  method: 'POST',
+	  headers: {
+		'Content-Type': 'application/json'
+	  },
+	  body: JSON.stringify(entry)
+	})
+	.then(response => response.json())
+	.then(data => console.log('Saved to Google Sheet'))
+	.catch(error => console.error('Google Sheet Error:', error));
+
+	editId = null;
+	resetForm();
+	switchView('dashboard');
   }
 
   function deleteEntry(id) {
