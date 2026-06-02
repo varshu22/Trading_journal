@@ -637,18 +637,15 @@
 	  },
 	  body: JSON.stringify(entry)
 	})
-	.then(response => response.text())
-	.then(data => {
-	  console.log('Saved to Google Sheet:', data);
+	.then(async response => {
+	  console.log("Status:", response.status);
+	  console.log("URL:", response.url);
+	  const text = await response.text();
+	  console.log("Response:", text);
 	})
 	.catch(error => {
-	  console.error('Google Sheet Error:', error);
+	  console.error("Google Sheet Error:", error);
 	});
-
-	editId = null;
-	resetForm();
-	switchView('dashboard');
-  }
 
   function deleteEntry(id) {
     if (!confirm('Delete this entry?')) return;
