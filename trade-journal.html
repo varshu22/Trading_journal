@@ -637,9 +637,13 @@
 	  },
 	  body: JSON.stringify(entry)
 	})
-	.then(response => response.json())
-	.then(data => console.log('Saved to Google Sheet'))
-	.catch(error => console.error('Google Sheet Error:', error));
+	.then(response => response.text())
+	.then(data => {
+	  console.log('Saved to Google Sheet:', data);
+	})
+	.catch(error => {
+	  console.error('Google Sheet Error:', error);
+	});
 
 	editId = null;
 	resetForm();
